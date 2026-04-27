@@ -24,7 +24,6 @@ namespace SabreTools.Serialization.UI.Desktop.ViewModels
         private string _printableOutput = string.Empty;
         private string _errorMessage = "None";
         private string _statusMessage = "Ready to inspect a file.";
-        private bool _includeDebug;
         private bool _isBusy;
         private WorkspaceTab _selectedWorkspaceTab;
         private InspectionResult? _currentInspection;
@@ -54,6 +53,7 @@ namespace SabreTools.Serialization.UI.Desktop.ViewModels
                 if (SetField(ref _outputDirectory, value))
                 {
                     OnPropertyChanged(nameof(CanExtract));
+                    OnPropertyChanged(nameof(OutputDirectoryDisplay));
                 }
             }
         }
@@ -94,12 +94,6 @@ namespace SabreTools.Serialization.UI.Desktop.ViewModels
             private set => SetField(ref _statusMessage, value);
         }
 
-        public bool IncludeDebug
-        {
-            get => _includeDebug;
-            set => SetField(ref _includeDebug, value);
-        }
-
         public bool IsBusy
         {
             get => _isBusy;
@@ -127,6 +121,11 @@ namespace SabreTools.Serialization.UI.Desktop.ViewModels
             && _currentInspection?.CanExtract == true
             && !string.IsNullOrWhiteSpace(OutputDirectory)
             && !string.IsNullOrWhiteSpace(FilePath);
+
+        public string OutputDirectoryDisplay
+            => string.IsNullOrWhiteSpace(OutputDirectory)
+                ? "No output folder selected."
+                : OutputDirectory;
 
         public bool IsJsonTreeTabSelected => _selectedWorkspaceTab == WorkspaceTab.JsonTree;
 
@@ -196,7 +195,7 @@ namespace SabreTools.Serialization.UI.Desktop.ViewModels
 
             try
             {
-                ExtractionResult result = await _service.ExtractAsync(FilePath, OutputDirectory, IncludeDebug);
+                ExtractionResult result = await _service.ExtractAsync(FilePath, OutputDirectory, includeDebug: false);
                 StatusMessage = result.Message;
                 ErrorMessage = result.Succeeded ? "None" : result.Message;
             }

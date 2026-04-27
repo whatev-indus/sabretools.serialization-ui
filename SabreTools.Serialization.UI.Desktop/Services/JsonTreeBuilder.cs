@@ -18,15 +18,15 @@ namespace SabreTools.Serialization.UI.Desktop.Services
 
             return new ObservableCollection<JsonTreeItemViewModel>
             {
-                CreateNode("root", root),
+                CreateNode("root", root, isExpanded: true),
             };
         }
 
-        private static JsonTreeItemViewModel CreateNode(string name, JsonNode? node)
+        private static JsonTreeItemViewModel CreateNode(string name, JsonNode? node, bool isExpanded = false)
         {
             if (node is JsonObject obj)
             {
-                var item = new JsonTreeItemViewModel(name, $"{{{obj.Count} item(s)}}");
+                var item = new JsonTreeItemViewModel(name, $"{{{obj.Count} item(s)}}", isExpanded);
                 foreach (KeyValuePair<string, JsonNode?> pair in obj)
                 {
                     item.Children.Add(CreateNode(pair.Key, pair.Value));
@@ -37,7 +37,7 @@ namespace SabreTools.Serialization.UI.Desktop.Services
 
             if (node is JsonArray arr)
             {
-                var item = new JsonTreeItemViewModel(name, $"[{arr.Count} item(s)]");
+                var item = new JsonTreeItemViewModel(name, $"[{arr.Count} item(s)]", isExpanded);
                 for (int i = 0; i < arr.Count; i++)
                 {
                     item.Children.Add(CreateNode($"[{i}]", arr[i]));
@@ -50,7 +50,7 @@ namespace SabreTools.Serialization.UI.Desktop.Services
                 ? "null"
                 : JsonSerializer.Serialize(node);
 
-            return new JsonTreeItemViewModel(name, summary);
+            return new JsonTreeItemViewModel(name, summary, isExpanded);
         }
     }
 }

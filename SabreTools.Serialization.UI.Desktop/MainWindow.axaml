@@ -32,8 +32,6 @@
                 <Button Grid.Column="0" Classes="secondary" Content="Browse File" Click="BrowseFileButton_OnClick" Margin="0,0,5,0" />
                 <Button Grid.Column="1" Classes="primary" Content="Inspect File" Click="InspectButton_OnClick" IsEnabled="{Binding CanInspect}" />
               </Grid>
-
-              <CheckBox Content="Include debug output." IsChecked="{Binding IncludeDebug}" />
             </StackPanel>
           </Border>
 
@@ -46,6 +44,11 @@
                 <Button Grid.Column="0" Classes="secondary" Content="Browse Folder" Click="BrowseFolderButton_OnClick" Margin="0,0,5,0" />
                 <Button Grid.Column="1" Classes="primary" Content="Extract All" Click="ExtractButton_OnClick" IsEnabled="{Binding CanExtract}" />
               </Grid>
+
+              <TextBlock Classes="caption"
+                         Text="{Binding OutputDirectoryDisplay}"
+                         TextAlignment="Center"
+                         TextWrapping="Wrap" />
             </StackPanel>
           </Border>
 
@@ -119,6 +122,11 @@
                         Padding="12">
                   <ScrollViewer>
                     <TreeView ItemsSource="{Binding JsonTreeItems}">
+                      <TreeView.Styles>
+                        <Style Selector="TreeViewItem">
+                          <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
+                        </Style>
+                      </TreeView.Styles>
                       <TreeView.ItemTemplate>
                         <TreeDataTemplate ItemsSource="{Binding Children}">
                           <StackPanel Orientation="Horizontal" Spacing="8">
