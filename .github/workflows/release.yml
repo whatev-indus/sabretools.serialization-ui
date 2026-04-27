@@ -110,39 +110,20 @@ jobs:
             --self-contained true `
             --output "$env:RUNNER_TEMP\publish-windows"
 
-      - name: Install WiX Toolset
-        shell: pwsh
-        run: choco install wixtoolset --yes --no-progress
-
-      - name: Build MSI
+      - name: Package Windows zip
         shell: pwsh
         run: |
-          $wixBin = "${env:ProgramFiles(x86)}\WiX Toolset v3.11\bin"
-          if (-not (Test-Path $wixBin)) {
-            $wixBin = "${env:ProgramFiles(x86)}\WiX Toolset v3.14\bin"
-          }
-
-          if (-not (Test-Path $wixBin)) {
-            throw "WiX Toolset bin directory was not found."
-          }
-
-          $packagingDir = Join-Path $env:RUNNER_TEMP "wix"
-          New-Item -ItemType Directory -Path $packagingDir -Force | Out-Null
-
           $publishDir = Join-Path $env:RUNNER_TEMP "publish-windows"
-          $iconPath = Join-Path $env:GITHUB_WORKSPACE "SabreTools.Serialization.UI.Desktop\Assets\Icons\AppIcon.ico"
-          Copy-Item -Path "$env:GITHUB_WORKSPACE\packaging\windows\Product.wxs" -Destination $packagingDir
-
-          Push-Location $packagingDir
-          & "$wixBin\heat.exe" dir $publishDir -cg AppFiles -dr INSTALLFOLDER -scom -sreg -sfrag -srd -gg -var var.PublishDir -out AppFiles.wxs
-          & "$wixBin\candle.exe" -dPublishDir=$publishDir -dProductVersion=$env:VERSION -dProductIcon=$iconPath Product.wxs AppFiles.wxs
-          & "$wixBin\light.exe" -ext WixUIExtension Product.wixobj AppFiles.wixobj -o "SabreTools.Serilization_Windows_v$env:VERSION.msi"
-          Pop-Location
+          $zipPath = Join-Path $env:RUNNER_TEMP "SabreTools.Serialization_Windows_v$env:VERSION.zip"
+          if (Test-Path $zipPath) {
+            Remove-Item $zipPath -Force
+          }
+          Compress-Archive -Path (Join-Path $publishDir '*') -DestinationPath $zipPath
 
       - uses: actions/upload-artifact@v4
         with:
           name: windows-build
-          path: ${{ runner.temp }}/wix/SabreTools.Serilization_Windows_v${{ steps.vars.outputs.version }}.msi
+          path: ${{ runner.temp }}/SabreTools.Serialization_Windows_v${{ steps.vars.outputs.version }}.zip
 
   linux:
     runs-on: ubuntu-22.04
