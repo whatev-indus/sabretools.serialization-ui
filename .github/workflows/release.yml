@@ -10,8 +10,8 @@ permissions:
 
 env:
   DOTNET_VERSION: "7.0.x"
-  PROJECT_PATH: "SabreTools.Serialization.Ui.Desktop/SabreTools.Serialization.Ui.Desktop.csproj"
-  EXECUTABLE_NAME: "SabreTools.Serialization.Ui.Desktop"
+  PROJECT_PATH: "SabreTools.Serialization.UI.Desktop/SabreTools.Serialization.UI.Desktop.csproj"
+  EXECUTABLE_NAME: "SabreTools.Serialization.UI.Desktop"
   APP_NAME: "SabreTools.Serialization"
 
 jobs:
@@ -47,7 +47,7 @@ jobs:
           APP_DIR="$RUNNER_TEMP/${APP_NAME}.app"
           mkdir -p "$APP_DIR/Contents/MacOS" "$APP_DIR/Contents/Resources"
           cp -R "$RUNNER_TEMP/publish-macos"/. "$APP_DIR/Contents/MacOS/"
-          cp "SabreTools.Serialization.Ui.Desktop/Assets/Icons/AppIcon.png" "$APP_DIR/Contents/Resources/AppIcon.png"
+          cp "SabreTools.Serialization.UI.Desktop/Assets/Icons/AppIcon.png" "$APP_DIR/Contents/Resources/AppIcon.png"
 
           cat > "$APP_DIR/Contents/Info.plist" <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
@@ -130,7 +130,7 @@ jobs:
           New-Item -ItemType Directory -Path $packagingDir -Force | Out-Null
 
           $publishDir = Join-Path $env:RUNNER_TEMP "publish-windows"
-          $iconPath = Join-Path $env:GITHUB_WORKSPACE "SabreTools.Serialization.Ui.Desktop\Assets\Icons\AppIcon.ico"
+          $iconPath = Join-Path $env:GITHUB_WORKSPACE "SabreTools.Serialization.UI.Desktop\Assets\Icons\AppIcon.ico"
           Copy-Item -Path "$env:GITHUB_WORKSPACE\packaging\windows\Product.wxs" -Destination $packagingDir
 
           Push-Location $packagingDir
@@ -181,7 +181,7 @@ jobs:
           APPDIR="$RUNNER_TEMP/AppDir"
           mkdir -p "$APPDIR/usr/bin"
           cp -R "$RUNNER_TEMP/publish-linux"/. "$APPDIR/usr/bin/"
-          cp "SabreTools.Serialization.Ui.Desktop/Assets/Icons/AppIcon.png" "$APPDIR/${APP_NAME}.png"
+          cp "SabreTools.Serialization.UI.Desktop/Assets/Icons/AppIcon.png" "$APPDIR/${APP_NAME}.png"
 
           cat > "$APPDIR/${APP_NAME}.desktop" <<EOF
           [Desktop Entry]

@@ -14,14 +14,13 @@ The application intentionally keeps its own logic thin. Detection, printing, and
 
 ## Projects
 
-- `SabreTools.Serialization.Ui.Desktop`: primary Avalonia desktop app
-- `SabreTools.Serialization.Ui.Web`: earlier Razor Pages starter kept in the repo, but not the main target for this GUI effort
+- `SabreTools.Serialization.UI.Desktop`: primary Avalonia desktop app
 
 ## Run it
 
 ```bash
 env DOTNET_CLI_HOME=/tmp/dotnet-home dotnet restore
-env DOTNET_CLI_HOME=/tmp/dotnet-home dotnet run --project SabreTools.Serialization.Ui.Desktop
+env DOTNET_CLI_HOME=/tmp/dotnet-home dotnet run --project SabreTools.Serialization.UI.Desktop
 ```
 
 ## Behavior Notes
