@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using SabreTools.Serialization.UI.Desktop.Services;
 using SabreTools.Serialization.UI.Desktop.ViewModels;
@@ -11,6 +12,28 @@ namespace SabreTools.Serialization.UI.Desktop
         {
             InitializeComponent();
             DataContext = new MainWindowViewModel(new SerializationWorkbenchService());
+            AddHandler(DragDrop.DragOverEvent, MainWindow_OnDragOver);
+            AddHandler(DragDrop.DropEvent, MainWindow_OnDrop);
+        }
+
+        private void MainWindow_OnDragOver(object? sender, DragEventArgs e)
+        {
+            e.DragEffects = HasDroppedFile(e) ? DragDropEffects.Copy : DragDropEffects.None;
+            e.Handled = true;
+        }
+
+        private async void MainWindow_OnDrop(object? sender, DragEventArgs e)
+        {
+            if (DataContext is not MainWindowViewModel viewModel)
+                return;
+
+            string? localPath = await GetFirstDroppedLocalPathAsync(e);
+            if (string.IsNullOrWhiteSpace(localPath))
+                return;
+
+            viewModel.SetFilePath(localPath);
+            await viewModel.InspectSelectedFileAsync();
+            e.Handled = true;
         }
 
         private async void BrowseFileButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -81,6 +104,19 @@ namespace SabreTools.Serialization.UI.Desktop
         {
             if (DataContext is MainWindowViewModel viewModel)
                 viewModel.SelectWorkspaceTab("RawJson");
+        }
+
+        private static bool HasDroppedFile(DragEventArgs e)
+            => e.Data.Contains(DataFormats.Files);
+
+        private static Task<string?> GetFirstDroppedLocalPathAsync(DragEventArgs e)
+        {
+            if (!e.Data.Contains(DataFormats.Files))
+                return Task.FromResult<string?>(null);
+
+            IEnumerable<IStorageItem>? items = e.Data.Get(DataFormats.Files) as IEnumerable<IStorageItem>;
+            IStorageFile? file = items?.OfType<IStorageFile>().FirstOrDefault();
+            return Task.FromResult(file?.TryGetLocalPath());
         }
     }
 }

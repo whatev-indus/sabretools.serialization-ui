@@ -41,6 +41,7 @@ namespace SabreTools.Serialization.UI.Desktop.ViewModels
                 if (SetField(ref _filePath, value))
                 {
                     OnPropertyChanged(nameof(CanInspect));
+                    OnPropertyChanged(nameof(FileNameDisplay));
                 }
             }
         }
@@ -122,6 +123,11 @@ namespace SabreTools.Serialization.UI.Desktop.ViewModels
             && !string.IsNullOrWhiteSpace(OutputDirectory)
             && !string.IsNullOrWhiteSpace(FilePath);
 
+        public string FileNameDisplay
+            => string.IsNullOrWhiteSpace(FilePath)
+                ? "No file selected."
+                : Path.GetFileName(FilePath);
+
         public string OutputDirectoryDisplay
             => string.IsNullOrWhiteSpace(OutputDirectory)
                 ? "No output folder selected."
@@ -176,7 +182,7 @@ namespace SabreTools.Serialization.UI.Desktop.ViewModels
                 OnPropertyChanged(nameof(CanExtract));
 
                 StatusMessage = result.ErrorMessage is null
-                    ? $"Inspection complete. Wrapper detected: {result.WrapperType}."
+                    ? "Inspection complete."
                     : $"Inspection finished with an issue: {result.ErrorMessage}";
             }
             finally
