@@ -28,3 +28,6 @@ env DOTNET_CLI_HOME=/tmp/dotnet-home dotnet run --project SabreTools.Serializati
 - Printable wrappers populate the JSON tree and printed info tabs
 - Non-printable wrappers still show detection details and extract support state
 - Extraction uses the wrapper's built-in logic directly, mirroring `ExtractionTool`
+
+
+<img width="1472" height="1040" alt="Screenshot 2026-04-27 at 9 21 36 PM" src="https://github.com/user-attachments/assets/ab32cf4d-e68e-4d12-aa39-42a13dd107bf" />
